@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/mHeaderLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/mSectionTextView"
+            android:layout_centerVertical="true"
+            android:padding="24dp"
+            android:layout_width="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_bold"
+            android:text="Streams" />
+
+        <RelativeLayout
+            android:id="@+id/mSearchView"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/like_button_drawable"
+            android:layout_alignParentEnd="true"
+            android:layout_width="48dp"
+            android:layout_height="48dp" >
+
+            <ImageView
+                android:id="@+id/mSearchImageView"
+                android:layout_marginStart="16dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_search_white_24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:textColor="@android:color/white"
+                android:textColorHint="@android:color/white"
+                android:layout_centerVertical="true"
+                android:id="@+id/mSearchStreamEditText"
+                android:hint="Search"
+                android:maxLines="1"
+                android:maxLength="30"
+                android:layout_marginStart="48dp"
+                android:layout_width="280dp"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/mScrollView"
+        android:padding="16dp"
+        android:layout_below="@id/mHeaderLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/mRecyclerView"
+                android:overScrollMode="never"
+                android:layout_width="match_parent"
+                android:layout_height="240dp" />
+
+            <!-- This part should be wrapped inside another view -->
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/mLottieAnimationView"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp" />
+
+                <TextView
+                    android:id="@+id/mDisplayNameTextView"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:textColor="@android:color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <RelativeLayout
+                    android:gravity="end"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/mViewerCountTextView"
+                        android:layout_centerVertical="true"
+                        android:fontFamily="@font/poppins"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:layout_toEndOf="@id/mViewerCountTextView"
+                        android:layout_marginStart="8dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_eye_24dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp" />
+
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/mStreamDescriptionTextView"
+                android:layout_marginStart="36dp"
+                android:textSize="14sp"
+                android:fontFamily="@font/poppins"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/mPlayingTextView"
+                android:layout_marginStart="36dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
