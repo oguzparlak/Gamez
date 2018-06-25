@@ -11,6 +11,10 @@ import android.widget.ImageView
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.oguzparlak.ramotioncardslider.*
+import com.oguzparlak.ramotioncardslider.helper.FeaturedStreamsQuery
+import com.oguzparlak.ramotioncardslider.helper.FeaturedStreamsQueryBuilder
+import com.oguzparlak.ramotioncardslider.helper.StreamQuery
+import com.oguzparlak.ramotioncardslider.helper.StreamQueryBuilder
 import com.oguzparlak.ramotioncardslider.model.Stream
 import com.ramotion.cardslider.CardSliderLayoutManager
 import com.ramotion.cardslider.CardSnapHelper
@@ -40,14 +44,15 @@ class StreamFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d(TAG, "onViewCreated: ")
-
         mStreamList = ArrayList()
 
         // Request TEST
         val volleyClient = VolleyClient.instance
         volleyClient.prepareWithContext(activity!!)
-        volleyClient.addToRequestQueue("https://api.twitch.tv/kraken/streams/?stream_type=all&limit=100")
+
+        // Build a Stream Url
+        val url = FeaturedStreamsQueryBuilder().getQuery(FeaturedStreamsQuery())
+        volleyClient.addToRequestQueue(url)
 
         mRecyclerView.layoutManager = CardLayoutManager()
         CardSnapHelper().attachToRecyclerView(mRecyclerView)
@@ -90,14 +95,16 @@ class StreamFragment : Fragment() {
     /**
      * Do De-Serialization here
      * Parse Streams
+     * TODO Fix Here, This block should work with any type of response
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageReceived(data: Any) {
         val parser = JsonParser()
         val root = parser.parse(data.toString())
-        val streamsArray = root.asJsonObject["streams"].asJsonArray
+        val streamsArray = root.asJsonObject["featured"].asJsonArray
         for (streamObject in streamsArray) {
-            val stream = Gson().fromJson(streamObject, Stream::class.java)
+            val temp = streamObject.asJsonObject["stream"].asJsonObject
+            val stream = Gson().fromJson(temp, Stream::class.java)
             Log.d(TAG, "onMessageReceived: stream: $stream")
             mStreamList.add(stream)
         }

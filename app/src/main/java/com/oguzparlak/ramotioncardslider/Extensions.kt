@@ -2,6 +2,7 @@ package com.oguzparlak.ramotioncardslider
 
 import android.app.Activity
 import android.content.Context
+import android.net.Uri
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -80,4 +81,9 @@ fun Long.toK(): String {
     val formattedString = decimalFormat.format(firstDigit)
     return stringBuilder.append(formattedString)
             .append("K").toString()
+}
+
+fun Uri.Builder.addQueryParameter(key: String?, value: String?): Uri.Builder {
+    if (key == null || value == null) return this
+    return this.appendQueryParameter(key, value)
 }
