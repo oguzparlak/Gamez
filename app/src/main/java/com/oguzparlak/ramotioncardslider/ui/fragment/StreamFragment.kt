@@ -11,6 +11,8 @@ import android.widget.ImageView
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.oguzparlak.ramotioncardslider.*
+import com.oguzparlak.ramotioncardslider.helper.StreamQuery
+import com.oguzparlak.ramotioncardslider.helper.TwitchWrapper
 import com.oguzparlak.ramotioncardslider.model.Stream
 import com.ramotion.cardslider.CardSliderLayoutManager
 import com.ramotion.cardslider.CardSnapHelper
@@ -47,7 +49,13 @@ class StreamFragment : Fragment() {
         // Request TEST
         val volleyClient = VolleyClient.instance
         volleyClient.prepareWithContext(activity!!)
-        volleyClient.addToRequestQueue("https://api.twitch.tv/kraken/streams/?stream_type=all&limit=100")
+
+        // Build a Stream Url
+        val twitchWrapper = TwitchWrapper()
+        val url = twitchWrapper.buildStreamUrl(StreamQuery())
+        volleyClient.addToRequestQueue(url)
+
+        // volleyClient.addToRequestQueue("https://api.twitch.tv/kraken/streams/?stream_type=all&limit=100")
 
         mRecyclerView.layoutManager = CardLayoutManager()
         CardSnapHelper().attachToRecyclerView(mRecyclerView)
