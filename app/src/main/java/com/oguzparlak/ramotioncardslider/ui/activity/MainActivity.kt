@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import com.oguzparlak.ramotioncardslider.R
 import com.oguzparlak.ramotioncardslider.ui.fragment.GameFragment
@@ -22,14 +24,42 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        setSupportActionBar(toolbar)
+
         mBottomNavigationView.setOnNavigationItemSelectedListener(this)
 
+        openFragment()
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        val menuId = item!!.itemId
+        when (menuId) {
+            R.id.action_search -> {
+                // TODO Implement it later
+                return true
+            }
+            R.id.action_filter -> {
+                // TODO Implement it later
+                return true
+            }
+        }
+        return false
     }
 
     fun openFragment() {
         // Add Fragment
         supportFragmentManager.beginTransaction()
                 .replace(R.id.mFragmentContainer, StreamFragment())
+                .commit()
+
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.mSecondFragmentContainer, StreamFragment())
                 .commit()
     }
 

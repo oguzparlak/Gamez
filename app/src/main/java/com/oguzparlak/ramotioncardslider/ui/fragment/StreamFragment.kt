@@ -30,8 +30,6 @@ class StreamFragment : Fragment() {
         private const val TAG = "StreamFragment"
     }
 
-    private var expanded = false
-
     private lateinit var mStreamList: ArrayList<Stream>
 
     private lateinit var mAdapter: StreamAdapter
@@ -56,39 +54,6 @@ class StreamFragment : Fragment() {
 
         mRecyclerView.layoutManager = CardLayoutManager()
         CardSnapHelper().attachToRecyclerView(mRecyclerView)
-
-        // Lottie Test
-        mLottieAnimationView.setAnimation(R.raw.active)
-
-        mSearchImageView.setOnClickListener {
-            if (!expanded) {
-                // Make the Search bar taller with an animation
-                val resizeAnimation = ResizeAnimation(mSearchView, activity!!.getFrameWidth())
-                resizeAnimation.duration = 400
-                mSearchView.startAnimation(resizeAnimation)
-                // mSearchStreamEditText.visibility = View.VISIBLE
-                // SearchView Animation
-                mSearchStreamEditText.applyFadeInAnimation(context!!)
-                mSectionTextView.applyFadeOutAnimation(context!!)
-                mSearchImageView.setImageResource(R.drawable.ic_close_white_24dp)
-                // Show keyboard
-                context!!.showSoftKeyboard(mSearchStreamEditText)
-                mSearchStreamEditText.requestFocus()
-                // mBottomNavigationView.applyFadeOutAnimation(context!!, true)
-                expanded = true
-            } else {
-                val resizeAnimation = ResizeAnimation(mSearchView, 120)
-                resizeAnimation.duration = 400
-                // mSearchStreamEditText.visibility = View.INVISIBLE
-                mSearchView.startAnimation(resizeAnimation)
-                mSearchStreamEditText.applyFadeOutAnimation(context!!, true)
-                mSectionTextView.applyFadeInAnimation(context!!)
-                mSearchImageView.setImageResource(R.drawable.ic_search_white_24dp)
-                // mBottomNavigationView.applyFadeInAnimation(context!!)
-                context!!.hideKeyboardFrom(mSearchStreamEditText)
-                expanded = false
-            }
-        }
 
     }
 
@@ -125,7 +90,7 @@ class StreamFragment : Fragment() {
     /**
      * Customized CardLayoutManager
      */
-    inner class CardLayoutManager: CardSliderLayoutManager(128, 480, 64F)
+    inner class CardLayoutManager: CardSliderLayoutManager(16, 640, 32F)
 
     /**
      * Simple Adapter class of the RecyclerView
@@ -153,23 +118,6 @@ class StreamFragment : Fragment() {
             fun bind(stream: Stream) {
                 // Picasso
                 Picasso.get().load(stream.preview.large).into(imageView)
-                // Viewer Count
-                mViewerCountTextView.text = stream.viewerCount.toK()
-                // Game
-                mPlayingTextView.text = getString(R.string.playing, stream.game)
-                // Display Name
-                mDisplayNameTextView.text = stream.channel.displayName
-                // Stream Description
-                mStreamDescriptionTextView.text = stream.channel.status
-                // Live Status
-                if (stream.streamType == "live")
-                    mLottieAnimationView.setAnimation(R.raw.active)
-                else
-                    mLottieAnimationView.setAnimation(R.raw.passive)
-                if (!mLottieAnimationView.isAnimating) {
-                    mLottieAnimationView.playAnimation()
-                }
-
             }
 
         }
