@@ -5,12 +5,17 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import com.oguzparlak.ramotioncardslider.R
+import com.oguzparlak.ramotioncardslider.VolleyClient
+import com.oguzparlak.ramotioncardslider.helper.FeaturedStreamsQuery
+import com.oguzparlak.ramotioncardslider.helper.FeaturedStreamsQueryBuilder
+import com.oguzparlak.ramotioncardslider.helper.StreamQuery
+import com.oguzparlak.ramotioncardslider.helper.StreamQueryBuilder
 import com.oguzparlak.ramotioncardslider.ui.fragment.GameFragment
 import com.oguzparlak.ramotioncardslider.ui.fragment.StreamFragment
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -30,6 +35,16 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         openFragment()
 
+        // Request TEST
+        val volleyClient = VolleyClient.instance
+        volleyClient.prepareWithContext(this)
+
+        // Build a Stream Url
+        val featuredStreamUrl = FeaturedStreamsQueryBuilder().getQuery(FeaturedStreamsQuery())
+        val streamUrl = StreamQueryBuilder().getQuery(StreamQuery(limit = "100"))
+
+        volleyClient.addToRequestQueue(featuredStreamUrl)
+        volleyClient.addToRequestQueue(streamUrl)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -54,12 +69,14 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     fun openFragment() {
         // Add Fragment
+        val streamFragment = StreamFragment.newInstance("Live Streams", StreamFragment.StreamType.AllStreams)
+        val featuredStreamsFragment = StreamFragment.newInstance("Featured Streams", StreamFragment.StreamType.FeaturedStreamType)
         supportFragmentManager.beginTransaction()
-                .replace(R.id.mFragmentContainer, StreamFragment())
+                .replace(R.id.mFragmentContainer, streamFragment)
                 .commit()
 
         supportFragmentManager.beginTransaction()
-                .replace(R.id.mSecondFragmentContainer, StreamFragment())
+                .replace(R.id.mSecondFragmentContainer, featuredStreamsFragment)
                 .commit()
     }
 

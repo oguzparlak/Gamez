@@ -52,4 +52,7 @@ dependencies {
     // Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
 
+    // Kotlin Extensions
+    implementation 'androidx.core:core-ktx:0.3'
+
 }

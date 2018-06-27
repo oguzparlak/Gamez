@@ -3,18 +3,19 @@ package com.oguzparlak.ramotioncardslider.ui.fragment
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import com.google.gson.Gson
+import android.widget.TextView
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import com.oguzparlak.ramotioncardslider.*
-import com.oguzparlak.ramotioncardslider.helper.FeaturedStreamsQuery
-import com.oguzparlak.ramotioncardslider.helper.FeaturedStreamsQueryBuilder
-import com.oguzparlak.ramotioncardslider.helper.StreamQuery
-import com.oguzparlak.ramotioncardslider.helper.StreamQueryBuilder
+import com.oguzparlak.ramotioncardslider.R
+import com.oguzparlak.ramotioncardslider.helper.FeaturedStreamsResponseHandler
+import com.oguzparlak.ramotioncardslider.helper.JsonResponseHandler
+import com.oguzparlak.ramotioncardslider.helper.StreamResponseHandler
+import com.oguzparlak.ramotioncardslider.hide
 import com.oguzparlak.ramotioncardslider.model.Stream
 import com.ramotion.cardslider.CardSliderLayoutManager
 import com.ramotion.cardslider.CardSnapHelper
@@ -23,39 +24,62 @@ import kotlinx.android.synthetic.main.stream_fragment.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.json.JSONObject
+import java.lang.reflect.Array
 
 class StreamFragment : Fragment() {
 
+    enum class StreamType {
+        FeaturedStreamType, AllStreams;
+    }
+
+    private fun getResponseHandler(type: StreamType, root: JsonElement): JsonResponseHandler<Stream>? {
+        return when (type) {
+            StreamType.FeaturedStreamType -> FeaturedStreamsResponseHandler(root)
+            StreamType.AllStreams -> StreamResponseHandler(root)
+        }
+    }
+
     companion object {
         private const val TAG = "StreamFragment"
+
+        private const val TITLE_KEY = "title_key"
+
+        private const val STREAM_TYPE_KEY = "stream_type_key"
+
+        fun newInstance(title: String, streamType: StreamType): StreamFragment {
+            val self = StreamFragment()
+            val bundle = Bundle()
+            bundle.putString(TITLE_KEY, title)
+            bundle.putSerializable(STREAM_TYPE_KEY, streamType)
+            self.arguments = bundle
+            return self
+        }
     }
 
     private lateinit var mStreamList: ArrayList<Stream>
 
     private lateinit var mAdapter: StreamAdapter
 
+    private lateinit var mStreamType: StreamType
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.d(TAG, "onCreateView: ")
         return LayoutInflater.from(context).inflate(R.layout.stream_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mStreamList = ArrayList()
-
-        // Request TEST
-        val volleyClient = VolleyClient.instance
-        volleyClient.prepareWithContext(activity!!)
-
-        // Build a Stream Url
-        val url = FeaturedStreamsQueryBuilder().getQuery(FeaturedStreamsQuery())
-        volleyClient.addToRequestQueue(url)
+        mStreamList = arrayListOf()
 
         mRecyclerView.layoutManager = CardLayoutManager()
         CardSnapHelper().attachToRecyclerView(mRecyclerView)
 
+        mStreamTitleTextView.text = arguments?.getString(TITLE_KEY)
+
     }
+    // TODO Create newInstance method
+    // TODO Fix Layout Bugs
 
     /**
      * Do De-Serialization here
@@ -66,13 +90,10 @@ class StreamFragment : Fragment() {
     fun onMessageReceived(data: Any) {
         val parser = JsonParser()
         val root = parser.parse(data.toString())
-        val streamsArray = root.asJsonObject["featured"].asJsonArray
-        for (streamObject in streamsArray) {
-            val temp = streamObject.asJsonObject["stream"].asJsonObject
-            val stream = Gson().fromJson(temp, Stream::class.java)
-            Log.d(TAG, "onMessageReceived: stream: $stream")
-            mStreamList.add(stream)
-        }
+        mFragmentProgressBar.hide()
+        mStreamType = arguments?.getSerializable(STREAM_TYPE_KEY) as StreamType
+        val responseHandler = getResponseHandler(mStreamType, root)
+        mStreamList = responseHandler?.handle() as ArrayList<Stream>
         mAdapter = StreamAdapter()
         mRecyclerView.adapter = mAdapter
     }
@@ -90,7 +111,7 @@ class StreamFragment : Fragment() {
     /**
      * Customized CardLayoutManager
      */
-    inner class CardLayoutManager: CardSliderLayoutManager(16, 640, 32F)
+    inner class CardLayoutManager: CardSliderLayoutManager(32, 640, 32F)
 
     /**
      * Simple Adapter class of the RecyclerView
@@ -115,9 +136,17 @@ class StreamFragment : Fragment() {
 
             private var imageView: ImageView = itemView.findViewById(R.id.mCardImageView)
 
+            private var mStreamerTextView: TextView = itemView.findViewById(R.id.mStreamerTextView)
+
+            private var mGameTextView: TextView = itemView.findViewById(R.id.mGameTextView)
+
             fun bind(stream: Stream) {
                 // Picasso
                 Picasso.get().load(stream.preview.large).into(imageView)
+                // Streamer
+                mStreamerTextView.text = stream.channel.displayName
+                // Game
+                mGameTextView.text = stream.game
             }
 
         }
