@@ -9,7 +9,6 @@ import com.android.volley.toolbox.BasicNetwork
 import com.android.volley.toolbox.DiskBasedCache
 import com.android.volley.toolbox.HurlStack
 import com.android.volley.toolbox.JsonObjectRequest
-import com.oguzparlak.ramotioncardslider.helper.QueryBuilder
 import org.greenrobot.eventbus.EventBus
 
 class VolleyClient private constructor() {

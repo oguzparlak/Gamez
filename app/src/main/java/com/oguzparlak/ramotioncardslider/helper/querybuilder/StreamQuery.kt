@@ -1,4 +1,4 @@
-package com.oguzparlak.ramotioncardslider.helper
+package com.oguzparlak.ramotioncardslider.helper.querybuilder
 
 /**
  * Get any Stream

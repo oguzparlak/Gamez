@@ -29,6 +29,7 @@
             <TextView
                 android:id="@+id/mStreamerTextView"
                 android:text="Nightblu3"
+                android:layout_marginTop="2dp"
                 android:textColor="@android:color/white"
                 android:fontFamily="@font/poppins_semibold"
                 android:layout_gravity="bottom"

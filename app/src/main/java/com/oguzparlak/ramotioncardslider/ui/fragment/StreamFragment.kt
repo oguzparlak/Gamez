@@ -9,12 +9,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.oguzparlak.ramotioncardslider.R
-import com.oguzparlak.ramotioncardslider.helper.FeaturedStreamsResponseHandler
-import com.oguzparlak.ramotioncardslider.helper.JsonResponseHandler
-import com.oguzparlak.ramotioncardslider.helper.StreamResponseHandler
+import com.oguzparlak.ramotioncardslider.helper.responsehandler.FeaturedStreamsResponseHandler
+import com.oguzparlak.ramotioncardslider.helper.responsehandler.JsonResponseHandler
+import com.oguzparlak.ramotioncardslider.helper.responsehandler.StreamResponseHandler
 import com.oguzparlak.ramotioncardslider.hide
 import com.oguzparlak.ramotioncardslider.model.Stream
 import com.ramotion.cardslider.CardSliderLayoutManager
@@ -24,8 +23,6 @@ import kotlinx.android.synthetic.main.stream_fragment.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import org.json.JSONObject
-import java.lang.reflect.Array
 
 class StreamFragment : Fragment() {
 
@@ -78,8 +75,6 @@ class StreamFragment : Fragment() {
         mStreamTitleTextView.text = arguments?.getString(TITLE_KEY)
 
     }
-    // TODO Create newInstance method
-    // TODO Fix Layout Bugs
 
     /**
      * Do De-Serialization here

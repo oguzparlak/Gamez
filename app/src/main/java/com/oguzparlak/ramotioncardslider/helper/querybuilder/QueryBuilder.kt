@@ -1,4 +1,4 @@
-package com.oguzparlak.ramotioncardslider.helper
+package com.oguzparlak.ramotioncardslider.helper.querybuilder
 
 import android.net.Uri
 import android.support.annotation.NonNull

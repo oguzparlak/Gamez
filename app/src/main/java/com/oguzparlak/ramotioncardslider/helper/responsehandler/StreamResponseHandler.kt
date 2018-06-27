@@ -1,4 +1,4 @@
-package com.oguzparlak.ramotioncardslider.helper
+package com.oguzparlak.ramotioncardslider.helper.responsehandler
 
 import com.google.gson.Gson
 import com.google.gson.JsonArray

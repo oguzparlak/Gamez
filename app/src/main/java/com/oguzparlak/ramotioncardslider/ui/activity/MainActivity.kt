@@ -8,10 +8,10 @@ import android.view.Menu
 import android.view.MenuItem
 import com.oguzparlak.ramotioncardslider.R
 import com.oguzparlak.ramotioncardslider.VolleyClient
-import com.oguzparlak.ramotioncardslider.helper.FeaturedStreamsQuery
-import com.oguzparlak.ramotioncardslider.helper.FeaturedStreamsQueryBuilder
-import com.oguzparlak.ramotioncardslider.helper.StreamQuery
-import com.oguzparlak.ramotioncardslider.helper.StreamQueryBuilder
+import com.oguzparlak.ramotioncardslider.helper.querybuilder.FeaturedStreamsQuery
+import com.oguzparlak.ramotioncardslider.helper.querybuilder.FeaturedStreamsQueryBuilder
+import com.oguzparlak.ramotioncardslider.helper.querybuilder.StreamQuery
+import com.oguzparlak.ramotioncardslider.helper.querybuilder.StreamQueryBuilder
 import com.oguzparlak.ramotioncardslider.ui.fragment.GameFragment
 import com.oguzparlak.ramotioncardslider.ui.fragment.StreamFragment
 import kotlinx.android.synthetic.main.activity_main.*

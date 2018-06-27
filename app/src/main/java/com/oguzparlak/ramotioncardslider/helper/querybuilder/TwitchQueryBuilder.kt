@@ -1,4 +1,4 @@
-package com.oguzparlak.ramotioncardslider.helper
+package com.oguzparlak.ramotioncardslider.helper.querybuilder
 
 import com.oguzparlak.ramotioncardslider.addQueryParameter
 
