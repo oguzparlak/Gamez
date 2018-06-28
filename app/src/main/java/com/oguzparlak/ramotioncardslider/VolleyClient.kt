@@ -2,7 +2,6 @@ package com.oguzparlak.ramotioncardslider
 
 import android.app.Activity
 import android.util.Log
-import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.BasicNetwork
@@ -48,19 +47,23 @@ class VolleyClient private constructor() {
 
     private object Holder { val INSTANCE = VolleyClient() }
 
-    private fun makeRequest(url: String): JsonObjectRequest {
-        return JsonObjectRequest(Request.Method.GET, url, null,
+    private fun makeRequest(url: String, headers: MutableMap<String, String>? = null): JsonObjectRequest {
+        return object: JsonObjectRequest(Method.GET, url, null,
                 Response.Listener {
                     response ->
                     // Send message via EventBus
                     EventBus.getDefault().post(response)
                 },
-                Response.ErrorListener { error -> Log.e(TAG, "error: $error")})
+                Response.ErrorListener { error -> Log.e(TAG, "error: $error")}){
+                    override fun getHeaders(): MutableMap<String, String> {
+                        return if (headers != null) headers else super.getHeaders()
+                    }
+                }
     }
 
-    fun addToRequestQueue(url: String) {
+    fun addToRequestQueue(url: String, headers: MutableMap<String, String>? = null) {
         if (!prepared) throw IllegalArgumentException("VolleyClient should be prepared before making a call")
-        requestQueue.add(makeRequest(url))
+        requestQueue.add(makeRequest(url, headers))
     }
 
 }

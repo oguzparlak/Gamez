@@ -1,6 +1,7 @@
 package com.oguzparlak.ramotioncardslider.ui.activity
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
@@ -33,18 +34,9 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         mBottomNavigationView.setOnNavigationItemSelectedListener(this)
 
-        openFragment()
+        // openFragment()
 
-        // Request TEST
-        val volleyClient = VolleyClient.instance
-        volleyClient.prepareWithContext(this)
-
-        // Build a Stream Url
-        val featuredStreamUrl = FeaturedStreamsQueryBuilder().getQuery(FeaturedStreamsQuery())
-        val streamUrl = StreamQueryBuilder().getQuery(StreamQuery(limit = "100"))
-
-        volleyClient.addToRequestQueue(featuredStreamUrl)
-        volleyClient.addToRequestQueue(streamUrl)
+        startActivity(Intent(this, PlayerActivity::class.java))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -71,13 +63,29 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         // Add Fragment
         val streamFragment = StreamFragment.newInstance("Live Streams", StreamFragment.StreamType.AllStreams)
         val featuredStreamsFragment = StreamFragment.newInstance("Featured Streams", StreamFragment.StreamType.FeaturedStreamType)
+
         supportFragmentManager.beginTransaction()
                 .replace(R.id.mFragmentContainer, streamFragment)
+                .addToBackStack("Streams")
                 .commit()
 
         supportFragmentManager.beginTransaction()
                 .replace(R.id.mSecondFragmentContainer, featuredStreamsFragment)
+                .addToBackStack("FeaturedStreams")
                 .commit()
+
+        // Request TEST
+        val volleyClient = VolleyClient.instance
+        volleyClient.prepareWithContext(this)
+
+        // Build a Stream Url
+        val featuredStreamUrl = FeaturedStreamsQueryBuilder().getQuery(FeaturedStreamsQuery())
+        val streamUrl = StreamQueryBuilder().getQuery(StreamQuery(limit = "100"))
+
+        val header = mutableMapOf("Client-ID" to "euf4aa5zzjyq07ypuhivsn920p41in")
+
+        volleyClient.addToRequestQueue(featuredStreamUrl, header)
+        volleyClient.addToRequestQueue(streamUrl, header)
     }
 
     fun openAnotherFragment() {

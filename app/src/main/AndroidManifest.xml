@@ -25,6 +25,8 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+        <activity android:name=".ui.activity.PlayerActivity"></activity>
     </application>
 
 </manifest>

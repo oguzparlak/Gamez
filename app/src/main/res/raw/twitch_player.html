@@ -1,0 +1,25 @@
+<html style="background-color: black">
+    <body>
+        <!-- Add a placeholder for the Twitch embed -->
+        <div id="twitch-embed"></div>
+
+        <!-- Load the Twitch embed script -->
+        <script src="https://embed.twitch.tv/embed/v1.js"></script>
+
+        <!-- Create a Twitch.Embed object that will render within the "twitch-embed" root element. -->
+        <script type="text/javascript">
+        new Twitch.Embed("twitch-embed", {
+            width: "100%",
+            height: "50%",
+            channel: "monstercat",
+            chat: "mobile",
+            allowFullScreen: true,
+            layout: "video",
+            theme: "dark"
+        });
+        window.onload = function() {
+            console.log("Web page loaded");
+        }
+    </script>
+    </body>
+</html>
