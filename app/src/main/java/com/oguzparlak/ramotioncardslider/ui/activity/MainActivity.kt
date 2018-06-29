@@ -34,9 +34,9 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         mBottomNavigationView.setOnNavigationItemSelectedListener(this)
 
-        // openFragment()
+        openFragment()
 
-        startActivity(Intent(this, PlayerActivity::class.java))
+        // startActivity(Intent(this, PlayerActivity::class.java))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -66,12 +66,10 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         supportFragmentManager.beginTransaction()
                 .replace(R.id.mFragmentContainer, streamFragment)
-                .addToBackStack("Streams")
                 .commit()
 
         supportFragmentManager.beginTransaction()
                 .replace(R.id.mSecondFragmentContainer, featuredStreamsFragment)
-                .addToBackStack("FeaturedStreams")
                 .commit()
 
         // Request TEST

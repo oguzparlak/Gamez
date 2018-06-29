@@ -1,27 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1"
-    android:orientation="vertical"
     android:background="@android:color/black"
     tools:context="com.oguzparlak.ramotioncardslider.ui.activity.PlayerActivity">
 
     <WebView
-        android:layout_weight=".5"
         android:id="@+id/mPlayerWebView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
     </WebView>
 
-    <RelativeLayout
-        android:layout_weight=".5"
-        android:background="@android:color/holo_green_light"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </RelativeLayout>
-
-</LinearLayout>
+</RelativeLayout>

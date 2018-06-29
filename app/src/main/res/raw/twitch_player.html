@@ -8,18 +8,30 @@
 
         <!-- Create a Twitch.Embed object that will render within the "twitch-embed" root element. -->
         <script type="text/javascript">
-        new Twitch.Embed("twitch-embed", {
-            width: "100%",
-            height: "50%",
-            channel: "monstercat",
-            chat: "mobile",
-            allowFullScreen: true,
-            layout: "video",
-            theme: "dark"
-        });
-        window.onload = function() {
-            console.log("Web page loaded");
+
+        var twitchConfig;
+
+        // TwitchConfig object will consumed to configure Twitch Stream
+        function getTwitchConfig() {
+            return AndroidBridge.getTwitchConfig();
         }
+
+        function prepareTwitchConfig(callback) {
+            twitchConfig = getTwitchConfig();
+            setTimeout(function() {
+                callback();
+            }, 0)
+        }
+
+        function prepareTwitchPlayer() {
+            console.log(twitchConfig);
+            new Twitch.Embed("twitch-embed", JSON.parse(twitchConfig));
+        }
+
+        function init() {
+            prepareTwitchConfig(prepareTwitchPlayer);
+        }
+
     </script>
     </body>
 </html>

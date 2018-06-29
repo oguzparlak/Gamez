@@ -1,5 +1,6 @@
 package com.oguzparlak.ramotioncardslider.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
@@ -11,11 +12,13 @@ import android.widget.TextView
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import com.oguzparlak.ramotioncardslider.R
+import com.oguzparlak.ramotioncardslider.helper.interfaces.OnStreamClickListener
 import com.oguzparlak.ramotioncardslider.helper.responsehandler.FeaturedStreamsResponseHandler
 import com.oguzparlak.ramotioncardslider.helper.responsehandler.JsonResponseHandler
 import com.oguzparlak.ramotioncardslider.helper.responsehandler.StreamResponseHandler
 import com.oguzparlak.ramotioncardslider.hide
 import com.oguzparlak.ramotioncardslider.model.Stream
+import com.oguzparlak.ramotioncardslider.ui.activity.PlayerActivity
 import com.ramotion.cardslider.CardSliderLayoutManager
 import com.ramotion.cardslider.CardSnapHelper
 import com.squareup.picasso.Picasso
@@ -24,7 +27,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-class StreamFragment : Fragment() {
+class StreamFragment : Fragment(), OnStreamClickListener {
 
     enum class StreamType {
         FeaturedStreamType, AllStreams;
@@ -77,6 +80,17 @@ class StreamFragment : Fragment() {
     }
 
     /**
+     * Fired when a Stream is selected from the List
+     */
+    override fun onStreamClicked(stream: Stream) {
+        // Prepare a PlayerActivity Intent
+        val channel = stream.channel.displayName
+        val intent = Intent(context!!, PlayerActivity::class.java)
+        intent.putExtra("channel_extra", channel)
+        startActivity(intent)
+    }
+
+    /**
      * Do De-Serialization here
      * Parse Streams
      * TODO Fix Here, This block should work with any type of response
@@ -90,7 +104,9 @@ class StreamFragment : Fragment() {
         val responseHandler = getResponseHandler(mStreamType, root)
         mStreamList = responseHandler?.handle() as ArrayList<Stream>
         mAdapter = StreamAdapter()
+        mAdapter.assignOnClickListener(this)
         mRecyclerView.adapter = mAdapter
+        // TODO Fix Request Blocking UI-Thread
     }
 
     override fun onStart() {
@@ -112,6 +128,12 @@ class StreamFragment : Fragment() {
      * Simple Adapter class of the RecyclerView
      */
     inner class StreamAdapter : RecyclerView.Adapter<StreamAdapter.ViewHolder>() {
+
+        private var mStreamClickListener: OnStreamClickListener? = null
+
+        fun assignOnClickListener(listener: OnStreamClickListener) {
+            mStreamClickListener = listener
+        }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val rootView = LayoutInflater.from(context).inflate(R.layout.card_layout, parent, false)
@@ -142,6 +164,10 @@ class StreamFragment : Fragment() {
                 mStreamerTextView.text = stream.channel.displayName
                 // Game
                 mGameTextView.text = stream.game
+                // Set OnStreamListener
+                itemView.setOnClickListener {
+                    mStreamClickListener?.onStreamClicked(stream)
+                }
             }
 
         }
