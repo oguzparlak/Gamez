@@ -13,6 +13,7 @@ import com.oguzparlak.ramotioncardslider.helper.querybuilder.FeaturedStreamsQuer
 import com.oguzparlak.ramotioncardslider.helper.querybuilder.FeaturedStreamsQueryBuilder
 import com.oguzparlak.ramotioncardslider.helper.querybuilder.StreamQuery
 import com.oguzparlak.ramotioncardslider.helper.querybuilder.StreamQueryBuilder
+import com.oguzparlak.ramotioncardslider.model.StreamType
 import com.oguzparlak.ramotioncardslider.ui.fragment.GameFragment
 import com.oguzparlak.ramotioncardslider.ui.fragment.StreamFragment
 import kotlinx.android.synthetic.main.activity_main.*
@@ -61,8 +62,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     fun openFragment() {
         // Add Fragment
-        val streamFragment = StreamFragment.newInstance("Live Streams", StreamFragment.StreamType.AllStreams)
-        val featuredStreamsFragment = StreamFragment.newInstance("Featured Streams", StreamFragment.StreamType.FeaturedStreamType)
+        val streamFragment = StreamFragment.newInstance("Live Streams", StreamType.AllStreams)
+        val featuredStreamsFragment = StreamFragment.newInstance("Featured Streams", StreamType.FeaturedStreamType)
 
         supportFragmentManager.beginTransaction()
                 .replace(R.id.mFragmentContainer, streamFragment)

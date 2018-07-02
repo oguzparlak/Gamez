@@ -56,7 +56,7 @@ class VolleyClient private constructor() {
                 },
                 Response.ErrorListener { error -> Log.e(TAG, "error: $error")}){
                     override fun getHeaders(): MutableMap<String, String> {
-                        return if (headers != null) headers else super.getHeaders()
+                        return headers ?: super.getHeaders()
                     }
                 }
     }

@@ -7,6 +7,13 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
+import com.google.gson.JsonElement
+import com.oguzparlak.ramotioncardslider.helper.responsehandler.FeaturedStreamsResponseHandler
+import com.oguzparlak.ramotioncardslider.helper.responsehandler.JsonResponseHandler
+import com.oguzparlak.ramotioncardslider.helper.responsehandler.StreamResponseHandler
+import com.oguzparlak.ramotioncardslider.model.Stream
+import com.oguzparlak.ramotioncardslider.model.StreamType
+import com.oguzparlak.ramotioncardslider.ui.fragment.StreamFragment
 import java.text.DecimalFormat
 
 
@@ -83,7 +90,20 @@ fun Long.toK(): String {
             .append("K").toString()
 }
 
+/**
+ * Appends a query parameter to uri, if the key and value are specified
+ */
 fun Uri.Builder.addQueryParameter(key: String?, value: String?): Uri.Builder {
     if (key == null || value == null) return this
     return this.appendQueryParameter(key, value)
+}
+
+/**
+ * Returns a response handler with a provided root element
+ */
+fun StreamType.getResponseHandler(root: JsonElement) :  JsonResponseHandler<Stream>? {
+    return when (this) {
+        StreamType.FeaturedStreamType -> FeaturedStreamsResponseHandler(root)
+        StreamType.AllStreams -> StreamResponseHandler(root)
+    }
 }

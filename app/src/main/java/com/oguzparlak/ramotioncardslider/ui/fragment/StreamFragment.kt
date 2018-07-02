@@ -12,12 +12,14 @@ import android.widget.TextView
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import com.oguzparlak.ramotioncardslider.R
+import com.oguzparlak.ramotioncardslider.getResponseHandler
 import com.oguzparlak.ramotioncardslider.helper.interfaces.OnStreamClickListener
 import com.oguzparlak.ramotioncardslider.helper.responsehandler.FeaturedStreamsResponseHandler
 import com.oguzparlak.ramotioncardslider.helper.responsehandler.JsonResponseHandler
 import com.oguzparlak.ramotioncardslider.helper.responsehandler.StreamResponseHandler
 import com.oguzparlak.ramotioncardslider.hide
 import com.oguzparlak.ramotioncardslider.model.Stream
+import com.oguzparlak.ramotioncardslider.model.StreamType
 import com.oguzparlak.ramotioncardslider.ui.activity.PlayerActivity
 import com.ramotion.cardslider.CardSliderLayoutManager
 import com.ramotion.cardslider.CardSnapHelper
@@ -28,17 +30,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 class StreamFragment : Fragment(), OnStreamClickListener {
-
-    enum class StreamType {
-        FeaturedStreamType, AllStreams;
-    }
-
-    private fun getResponseHandler(type: StreamType, root: JsonElement): JsonResponseHandler<Stream>? {
-        return when (type) {
-            StreamType.FeaturedStreamType -> FeaturedStreamsResponseHandler(root)
-            StreamType.AllStreams -> StreamResponseHandler(root)
-        }
-    }
 
     companion object {
         private const val TAG = "StreamFragment"
@@ -93,7 +84,6 @@ class StreamFragment : Fragment(), OnStreamClickListener {
     /**
      * Do De-Serialization here
      * Parse Streams
-     * TODO Fix Here, This block should work with any type of response
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageReceived(data: Any) {
@@ -101,7 +91,7 @@ class StreamFragment : Fragment(), OnStreamClickListener {
         val root = parser.parse(data.toString())
         mFragmentProgressBar.hide()
         mStreamType = arguments?.getSerializable(STREAM_TYPE_KEY) as StreamType
-        val responseHandler = getResponseHandler(mStreamType, root)
+        val responseHandler = mStreamType.getResponseHandler(root)
         mStreamList = responseHandler?.handle() as ArrayList<Stream>
         mAdapter = StreamAdapter()
         mAdapter.assignOnClickListener(this)

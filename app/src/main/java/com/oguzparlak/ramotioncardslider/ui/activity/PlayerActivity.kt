@@ -1,19 +1,14 @@
 package com.oguzparlak.ramotioncardslider.ui.activity
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.oguzparlak.ramotioncardslider.R
 import kotlinx.android.synthetic.main.activity_player.*
 import org.json.JSONObject
-import android.os.Build
-import android.view.View
-import android.webkit.WebSettings
-
 
 
 /**
