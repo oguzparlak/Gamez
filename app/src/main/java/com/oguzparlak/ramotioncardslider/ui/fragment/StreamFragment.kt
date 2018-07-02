@@ -97,6 +97,7 @@ class StreamFragment : Fragment(), OnStreamClickListener {
         mAdapter.assignOnClickListener(this)
         mRecyclerView.adapter = mAdapter
         // TODO Fix Request Blocking UI-Thread
+        // TODO Handle errors when Twitch API is unavailable
     }
 
     override fun onStart() {

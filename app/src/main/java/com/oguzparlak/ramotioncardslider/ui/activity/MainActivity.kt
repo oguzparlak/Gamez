@@ -1,12 +1,12 @@
 package com.oguzparlak.ramotioncardslider.ui.activity
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.oguzparlak.ramotioncardslider.service.PopularStreamsAsyncJob
 import com.oguzparlak.ramotioncardslider.R
 import com.oguzparlak.ramotioncardslider.VolleyClient
 import com.oguzparlak.ramotioncardslider.helper.querybuilder.FeaturedStreamsQuery
@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         openFragment()
 
-        // startActivity(Intent(this, PlayerActivity::class.java))
+        PopularStreamsAsyncJob.scheduleJob()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -75,7 +75,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         // Request TEST
         val volleyClient = VolleyClient.instance
-        volleyClient.prepareWithContext(this)
 
         // Build a Stream Url
         val featuredStreamUrl = FeaturedStreamsQueryBuilder().getQuery(FeaturedStreamsQuery())

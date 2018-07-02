@@ -56,4 +56,7 @@ dependencies {
     // Kotlin Extensions
     implementation 'androidx.core:core-ktx:0.3'
 
+    // Android-Job
+    implementation 'com.evernote:android-job:1.2.6'
+
 }
