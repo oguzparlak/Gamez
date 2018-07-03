@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import com.oguzparlak.ramotioncardslider.R
 import com.oguzparlak.ramotioncardslider.getResponseHandler
+import com.oguzparlak.ramotioncardslider.helper.interfaces.Error
 import com.oguzparlak.ramotioncardslider.helper.interfaces.OnStreamClickListener
 import com.oguzparlak.ramotioncardslider.helper.responsehandler.FeaturedStreamsResponseHandler
 import com.oguzparlak.ramotioncardslider.helper.responsehandler.JsonResponseHandler
@@ -52,8 +54,6 @@ class StreamFragment : Fragment(), OnStreamClickListener {
 
     private lateinit var mAdapter: StreamAdapter
 
-    private lateinit var mStreamType: StreamType
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return LayoutInflater.from(context).inflate(R.layout.stream_fragment, container, false)
     }
@@ -86,18 +86,18 @@ class StreamFragment : Fragment(), OnStreamClickListener {
      * Parse Streams
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageReceived(data: Any) {
-        val parser = JsonParser()
-        val root = parser.parse(data.toString())
+    fun onMessageReceived(streams: List<Stream>) {
         mFragmentProgressBar.hide()
-        mStreamType = arguments?.getSerializable(STREAM_TYPE_KEY) as StreamType
-        val responseHandler = mStreamType.getResponseHandler(root)
-        mStreamList = responseHandler?.handle() as ArrayList<Stream>
+        mStreamList = streams as ArrayList<Stream>
         mAdapter = StreamAdapter()
         mAdapter.assignOnClickListener(this)
         mRecyclerView.adapter = mAdapter
-        // TODO Fix Request Blocking UI-Thread
-        // TODO Handle errors when Twitch API is unavailable
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onError(error: Error) {
+        // TODO Implement it later
+        Log.d(TAG, "onError: ${error.message}")
     }
 
     override fun onStart() {

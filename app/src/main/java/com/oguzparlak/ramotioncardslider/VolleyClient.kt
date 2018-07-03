@@ -18,7 +18,7 @@ class VolleyClient private constructor() {
 
     private var requestQueue: RequestQueue = RequestQueue(NoCache(), network)
 
-    private lateinit var httpClient: HttpClient
+    private var httpClient: HttpClient? = null
 
     companion object {
 
@@ -46,24 +46,23 @@ class VolleyClient private constructor() {
         return object: JsonObjectRequest(method, url, null,
                 Response.Listener {
                     response ->
-                        httpClient.onResponseReceived(response)
+                        httpClient?.onResponseReceived(response)
                 },
-                Response.ErrorListener { error -> httpClient.onError(Error(error.networkResponse.statusCode, error.message)) }){
+                Response.ErrorListener { error -> httpClient?.onError(Error(error.networkResponse.statusCode, error.message)) }){
                     override fun getHeaders(): MutableMap<String, String> {
                         return headers ?: super.getHeaders()
                     }
                 }
     }
 
-    /*
-    fun addToRequestQueue(url: String, headers: MutableMap<String, String>? = null) {
-        // Set up the network to use HttpURLConnection as the HTTP client.
-        val network = BasicNetwork(HurlStack())
-        requestQueue = RequestQueue(NoCache(), network).apply {
+    /**
+     * Adds the given request to the queue
+     */
+    fun addToRequestQueue(request: JsonObjectRequest) {
+        requestQueue.apply {
             start()
-            add(makeRequest(url, headers))
+            add(request)
         }
     }
-    */
 
 }

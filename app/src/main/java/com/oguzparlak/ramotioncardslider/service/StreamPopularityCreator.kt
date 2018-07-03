@@ -47,7 +47,7 @@ class PopularStreamsAsyncJob : Job() {
         // TODO Change Client-ID redeclaration
         // TODO !! Important Change EventBus data handling to Object Oriented Metaphor, otherwise conflicts would occur
         // TODO Add Google Play Services Support https://github.com/evernote/android-job
-        volleyClient.addToRequestQueue(TOP_GAMES_ENDPOINT, headers = mutableMapOf("Client-ID" to "euf4aa5zzjyq07ypuhivsn920p41in"))
+        // volleyClient.addToRequestQueue(TOP_GAMES_ENDPOINT, headers = mutableMapOf("Client-ID" to "euf4aa5zzjyq07ypuhivsn920p41in"))
         return Result.SUCCESS
     }
 
