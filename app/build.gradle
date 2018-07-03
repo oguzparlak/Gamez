@@ -59,4 +59,7 @@ dependencies {
     // Android-Job
     implementation 'com.evernote:android-job:1.2.6'
 
+    // Google Cloud Messaging
+    implementation 'com.google.android.gms:play-services-gcm:15.0.1'
+
 }

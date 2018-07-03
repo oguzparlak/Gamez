@@ -82,8 +82,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         val header = mutableMapOf("Client-ID" to "euf4aa5zzjyq07ypuhivsn920p41in")
 
-        volleyClient.addToRequestQueue(featuredStreamUrl, header)
-        volleyClient.addToRequestQueue(streamUrl, header)
+        // volleyClient.addToRequestQueue(featuredStreamUrl, header)
+        // volleyClient.addToRequestQueue(streamUrl, header)
     }
 
     fun openAnotherFragment() {
