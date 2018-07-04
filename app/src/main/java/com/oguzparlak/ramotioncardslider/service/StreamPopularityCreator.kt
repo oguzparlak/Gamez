@@ -1,15 +1,22 @@
 package com.oguzparlak.ramotioncardslider.service
 
+import android.support.v4.app.NotificationCompat
 import android.util.Log
 import com.evernote.android.job.Job
 import com.evernote.android.job.JobCreator
 import com.evernote.android.job.JobRequest
 import com.evernote.android.job.util.support.PersistableBundleCompat
+import com.oguzparlak.ramotioncardslider.R
 import com.oguzparlak.ramotioncardslider.VolleyClient
+import com.oguzparlak.ramotioncardslider.helper.interfaces.TwitchGameClient
+import com.oguzparlak.ramotioncardslider.model.Game
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.concurrent.TimeUnit
+import android.support.v4.app.NotificationManagerCompat
+
+
 
 class StreamPopularityCreator : JobCreator {
 
@@ -29,6 +36,7 @@ class PopularStreamsAsyncJob : Job() {
         fun scheduleJob(extras: PersistableBundleCompat? = null) {
             JobRequest.Builder(TAG)
                     .setPeriodic(TimeUnit.MINUTES.toMillis(15), TimeUnit.MINUTES.toMillis(5))
+                    // .startNow()
                     .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
                     .setUpdateCurrent(true)
                     .setExtras(extras)
@@ -43,11 +51,7 @@ class PopularStreamsAsyncJob : Job() {
         // exceeds 100K people.
         // Send a request to get the top games from TwitchAPI
         EventBus.getDefault().register(this)
-        val volleyClient = VolleyClient.instance
-        // TODO Change Client-ID redeclaration
-        // TODO !! Important Change EventBus data handling to Object Oriented Metaphor, otherwise conflicts would occur
-        // TODO Add Google Play Services Support https://github.com/evernote/android-job
-        // volleyClient.addToRequestQueue(TOP_GAMES_ENDPOINT, headers = mutableMapOf("Client-ID" to "euf4aa5zzjyq07ypuhivsn920p41in"))
+        TwitchGameClient(TOP_GAMES_ENDPOINT).makeRequest()
         return Result.SUCCESS
     }
 
@@ -57,8 +61,21 @@ class PopularStreamsAsyncJob : Job() {
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    fun onMessageReceived(data: Any) {
-        Log.d(TAG, "onMessageReceived: ")
+    fun onMessageReceived(games: List<Game>) {
+        // Get max view count from games
+        val mostPopularGame = games.maxBy { it.viewerCount }
+        // TODO Save the game in SharedPreferences
+        // TODO Prepare and show notification
+        val mBuilder = NotificationCompat.Builder(context, "Media & Entertainment")
+                .setSmallIcon(android.R.drawable.ic_btn_speak_now)
+                .setContentTitle("Woooohooo")
+                .setContentText(mostPopularGame!!.gameDetail.name)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    fun onError(error: Error) {
+        Log.d(TAG, "onMessageReceived: error: $error")
     }
 
 }

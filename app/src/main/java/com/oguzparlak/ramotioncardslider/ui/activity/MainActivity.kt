@@ -8,6 +8,13 @@ import android.view.Menu
 import android.view.MenuItem
 import com.oguzparlak.ramotioncardslider.service.PopularStreamsAsyncJob
 import com.oguzparlak.ramotioncardslider.R
+import com.oguzparlak.ramotioncardslider.helper.interfaces.TwitchStreamClient
+import com.oguzparlak.ramotioncardslider.helper.querybuilder.FeaturedStreamsQuery
+import com.oguzparlak.ramotioncardslider.helper.querybuilder.FeaturedStreamsQueryBuilder
+import com.oguzparlak.ramotioncardslider.helper.querybuilder.StreamQuery
+import com.oguzparlak.ramotioncardslider.helper.querybuilder.StreamQueryBuilder
+import com.oguzparlak.ramotioncardslider.ui.fragment.FeaturedStreamFragment
+import com.oguzparlak.ramotioncardslider.ui.fragment.StreamFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
@@ -22,13 +29,9 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         setSupportActionBar(toolbar)
-
         mBottomNavigationView.setOnNavigationItemSelectedListener(this)
-
         openFragment()
-
         PopularStreamsAsyncJob.scheduleJob()
     }
 
@@ -54,36 +57,25 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     private fun openFragment() {
         // Add Fragment
-        // val streamFragment = StreamFragment.newInstance("Live Streams", StreamType.AllStreams)
-        // val featuredStreamsFragment = FeaturedStreamFragment.newInstance("Featured Streams", StreamType.FeaturedStreamType)
+        val streamFragment = StreamFragment()
+        val featuredStreamsFragment = FeaturedStreamFragment()
 
-        // supportFragmentManager.beginTransaction()
-        //         .replace(R.id.mFragmentContainer, streamFragment)
-        //         .commit()
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.mFragmentContainer, streamFragment)
+                .commit()
 
-        // supportFragmentManager.beginTransaction()
-        //         .replace(R.id.mSecondFragmentContainer, featuredStreamsFragment)
-        //         .commit()
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.mSecondFragmentContainer, featuredStreamsFragment)
+                .commit()
 
-        // Request TEST
-        // val twitchClient = TwitchClient(StreamType.AllStreams, StreamQueryBuilder().getQuery(StreamQuery(limit = "100")))
-        // twitchClient.makeRequest()
+        TwitchStreamClient(StreamQueryBuilder()
+                .getQuery(StreamQuery(limit = "100")))
+                .makeRequest()
 
-        // TwitchClient(StreamQueryBuilder().getQuery(StreamQuery(limit = "100"))).makeRequest()
-
-        // TwitchClient(FeaturedStreamsQueryBuilder().getQuery(FeaturedStreamsQuery())).makeRequest()
-
-        // twitchClient.setStreamType(StreamType.FeaturedStreamType)
-        // twitchClient.makeRequest()
-
-        // Build a Stream Url
-        // val featuredStreamUrl = FeaturedStreamsQueryBuilder().getQuery(FeaturedStreamsQuery())
-        // val streamUrl = StreamQueryBuilder().getQuery(StreamQuery(limit = "100"))
-
-        // volleyClient.addToRequestQueue(featuredStreamUrl, header)
-        // volleyClient.addToRequestQueue(streamUrl, header)
+        TwitchStreamClient(FeaturedStreamsQueryBuilder()
+                .getQuery(FeaturedStreamsQuery()))
+                .makeRequest()
     }
-
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val id = item.itemId

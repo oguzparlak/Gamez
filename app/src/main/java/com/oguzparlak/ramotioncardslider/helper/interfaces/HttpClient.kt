@@ -12,4 +12,4 @@ interface HttpClient {
     fun onError(error: Error)
 }
 
-data class Error(val statusCode: Int, val message: String?)
+data class Error(val statusCode: Int?, val message: String?)

@@ -3,20 +3,17 @@ package com.oguzparlak.ramotioncardslider.helper.interfaces
 import com.google.gson.JsonParser
 import com.oguzparlak.ramotioncardslider.VolleyClient
 import com.oguzparlak.ramotioncardslider.getResponseHandler
-import com.oguzparlak.ramotioncardslider.hide
-import com.oguzparlak.ramotioncardslider.model.Stream
+import com.oguzparlak.ramotioncardslider.model.StreamFactory
 import com.oguzparlak.ramotioncardslider.model.StreamType
-import com.oguzparlak.ramotioncardslider.ui.fragment.StreamFragment
-import kotlinx.android.synthetic.main.stream_fragment.*
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONArray
 import org.json.JSONObject
 
-class TwitchClient(private val url: String) : HttpClient {
+class TwitchStreamClient(private val url: String) : HttpClient {
 
     private val volleyClient: VolleyClient = VolleyClient.instance
 
-    private var streamType = StreamType.AllStreams
+    private lateinit var streamType: StreamType
 
     init {
         // Set HttpClient
@@ -29,10 +26,18 @@ class TwitchClient(private val url: String) : HttpClient {
 
     override fun onResponseReceived(response: JSONObject) {
         val root = JsonParser().parse(response.toString())
-        if (response.has("featured")) streamType = StreamType.FeaturedStreamType
+        streamType = getStreamType(response)
         val responseHandler = streamType.getResponseHandler(root)
         val streams = responseHandler?.handle()
-        EventBus.getDefault().post(streams)
+        val streamMessage = StreamFactory.getStreamMessage(streamType, streams!!)
+        EventBus.getDefault().post(streamMessage)
+    }
+
+    private fun getStreamType(response: JSONObject): StreamType {
+        return if (response.has("featured"))
+            StreamType.FeaturedStreamType
+        else
+            StreamType.AllStreams
     }
 
     override fun onResponseReceived(response: JSONArray) {

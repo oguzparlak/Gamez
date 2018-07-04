@@ -17,8 +17,6 @@ data class Stream(
         val preview: Preview,
 
         val channel: Channel
-
-
 )
 
 data class Preview(val small: String, val medium: String, val large: String, val template: String)
