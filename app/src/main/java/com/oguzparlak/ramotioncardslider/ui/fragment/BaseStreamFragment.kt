@@ -11,11 +11,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.oguzparlak.ramotioncardslider.R
-import com.oguzparlak.ramotioncardslider.helper.interfaces.Error
 import com.oguzparlak.ramotioncardslider.helper.interfaces.OnStreamClickListener
 import com.oguzparlak.ramotioncardslider.hide
 import com.oguzparlak.ramotioncardslider.model.Stream
-import com.oguzparlak.ramotioncardslider.model.StreamMessage
 import com.oguzparlak.ramotioncardslider.ui.activity.PlayerActivity
 import com.ramotion.cardslider.CardSliderLayoutManager
 import com.ramotion.cardslider.CardSnapHelper
@@ -98,7 +96,7 @@ abstract class BaseStreamFragment: Fragment(), OnStreamClickListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onError(error: Error) {
         // TODO Implement it later
-        Log.d(TAG, "onError: ${error.message}")
+        // Log.d(TAG, "onError: ${error.message}")
     }
 
     /**

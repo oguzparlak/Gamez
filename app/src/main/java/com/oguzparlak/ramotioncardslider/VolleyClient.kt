@@ -5,16 +5,18 @@ import com.android.volley.toolbox.BasicNetwork
 import com.android.volley.toolbox.HurlStack
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.NoCache
-import com.oguzparlak.ramotioncardslider.helper.interfaces.Error
-import com.oguzparlak.ramotioncardslider.helper.interfaces.HttpClient
+import com.google.gson.Gson
+import com.oguzparlak.ramotioncardslider.model.Game
+import com.oguzparlak.ramotioncardslider.model.StreamFactory
+import com.oguzparlak.ramotioncardslider.model.StreamType
+import org.greenrobot.eventbus.EventBus
+import org.json.JSONObject
 
 class VolleyClient private constructor() {
 
     private var network = BasicNetwork(HurlStack())
 
     private var requestQueue: RequestQueue = RequestQueue(NoCache(), network)
-
-    private var httpClient: HttpClient? = null
 
     init {
         requestQueue.start()
@@ -36,40 +38,61 @@ class VolleyClient private constructor() {
 
     private object Holder { val INSTANCE = VolleyClient() }
 
-    fun setHttpClient(httpClient: HttpClient) {
-        this.httpClient = httpClient
+    private fun getJsonObjectRequest(method: Int = Request.Method.GET,
+                                     headers: MutableMap<String, String>? = mutableMapOf("Client-ID" to "euf4aa5zzjyq07ypuhivsn920p41in"),
+                                     url: String,
+                                     successListener: Response.Listener<JSONObject>? = null,
+                                     errorListener: Response.ErrorListener? = null): JsonObjectRequest {
+        return object: JsonObjectRequest(method, url, null, successListener, errorListener) {
+            override fun getHeaders(): MutableMap<String, String> {
+                return headers ?: super.getHeaders()
+            }
+            /**
+             * 10 seconds timeout threshold, the default was 5
+             */
+            override fun getRetryPolicy(): RetryPolicy {
+                return DefaultRetryPolicy(10000,
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+            }
+        }
     }
 
-    // TODO Create a generic infrastructure, create separate methods and callbacks for each of them
-    fun makeRequest(method: Int = Request.Method.GET,
-                            headers: MutableMap<String, String>? = mutableMapOf("Client-ID" to "euf4aa5zzjyq07ypuhivsn920p41in"),
-                            url: String): JsonObjectRequest {
-        return object: JsonObjectRequest(method, url, null,
-                Response.Listener {
-                    response ->
-                        httpClient?.onResponseReceived(response)
-                },
-                Response.ErrorListener { error -> httpClient?.onError(Error(error.networkResponse?.statusCode, error.message)) })
-                {
-                    override fun getHeaders(): MutableMap<String, String> {
-                        return headers ?: super.getHeaders()
-                    }
+    /**
+     * Retrieves the streams
+     * Request Method: GET
+     * @param url: Url of the endpoint
+     */
+    fun getStreams(streamType: StreamType, url: String) {
+        addToRequestQueue(getJsonObjectRequest(url = url,
+                errorListener = Response.ErrorListener { error ->
+                    EventBus.getDefault().post(error)
+        },
+                successListener =  Response.Listener { response ->
+                    val responseHandler = streamType.getResponseHandler(response.getRoot())
+                    val streams = responseHandler?.handle()
+                    val streamMessage = StreamFactory.getStreamMessage(streamType, streams!!)
+                    EventBus.getDefault().post(streamMessage)
+        }))
+    }
 
-                    /**
-                     * 10 seconds timeout threshold, the default was 5
-                     */
-                    override fun getRetryPolicy(): RetryPolicy {
-                        return DefaultRetryPolicy(10000,
-                                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
-                    }
-                }
+    fun getTopGames(url: String) {
+        addToRequestQueue(getJsonObjectRequest(url = url,
+                errorListener = Response.ErrorListener { error ->
+                    EventBus.getDefault().post(error)
+                },
+                successListener = Response.Listener { response ->
+                    val root = response.getRoot()
+                    val topGames = root.asJsonObject["top"].asJsonArray
+                    val games = topGames.map { Gson().fromJson(it, Game::class.java) }
+                    EventBus.getDefault().post(games)
+                }))
     }
 
     /**
      * Adds the given request to the queue
      */
-    fun addToRequestQueue(request: JsonObjectRequest) {
+    private fun addToRequestQueue(request: JsonObjectRequest) {
         requestQueue.add(request)
     }
 

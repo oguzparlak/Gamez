@@ -1,5 +1,6 @@
 package com.oguzparlak.ramotioncardslider.ui.fragment
 
+import com.oguzparlak.ramotioncardslider.R
 import com.oguzparlak.ramotioncardslider.model.LiveStreamMessage
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -12,6 +13,6 @@ class StreamFragment : BaseStreamFragment() {
     }
 
     override val title: String
-        get() = "Top Streams"
+        get() = getString(R.string.top_streams)
 
 }

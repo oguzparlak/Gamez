@@ -8,11 +8,12 @@ import android.view.Menu
 import android.view.MenuItem
 import com.oguzparlak.ramotioncardslider.service.PopularStreamsAsyncJob
 import com.oguzparlak.ramotioncardslider.R
-import com.oguzparlak.ramotioncardslider.helper.interfaces.TwitchStreamClient
+import com.oguzparlak.ramotioncardslider.VolleyClient
 import com.oguzparlak.ramotioncardslider.helper.querybuilder.FeaturedStreamsQuery
 import com.oguzparlak.ramotioncardslider.helper.querybuilder.FeaturedStreamsQueryBuilder
 import com.oguzparlak.ramotioncardslider.helper.querybuilder.StreamQuery
 import com.oguzparlak.ramotioncardslider.helper.querybuilder.StreamQueryBuilder
+import com.oguzparlak.ramotioncardslider.model.StreamType
 import com.oguzparlak.ramotioncardslider.ui.fragment.FeaturedStreamFragment
 import com.oguzparlak.ramotioncardslider.ui.fragment.StreamFragment
 import kotlinx.android.synthetic.main.activity_main.*
@@ -68,13 +69,9 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 .replace(R.id.mSecondFragmentContainer, featuredStreamsFragment)
                 .commit()
 
-        TwitchStreamClient(StreamQueryBuilder()
-                .getQuery(StreamQuery(limit = "100")))
-                .makeRequest()
-
-        TwitchStreamClient(FeaturedStreamsQueryBuilder()
-                .getQuery(FeaturedStreamsQuery()))
-                .makeRequest()
+        val volleyClient = VolleyClient.instance
+        volleyClient.getStreams(StreamType.FeaturedStreamType, FeaturedStreamsQueryBuilder().getQuery(FeaturedStreamsQuery()))
+        volleyClient.getStreams(StreamType.AllStreams, StreamQueryBuilder().getQuery(StreamQuery(limit = "100")))
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

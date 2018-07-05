@@ -8,12 +8,15 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import com.google.gson.JsonElement
+import com.google.gson.JsonParser
 import com.oguzparlak.ramotioncardslider.helper.responsehandler.FeaturedStreamsResponseHandler
 import com.oguzparlak.ramotioncardslider.helper.responsehandler.JsonResponseHandler
 import com.oguzparlak.ramotioncardslider.helper.responsehandler.StreamResponseHandler
 import com.oguzparlak.ramotioncardslider.model.Stream
 import com.oguzparlak.ramotioncardslider.model.StreamType
 import com.oguzparlak.ramotioncardslider.ui.fragment.StreamFragment
+import org.greenrobot.eventbus.EventBus
+import org.json.JSONObject
 import java.text.DecimalFormat
 
 
@@ -106,4 +109,8 @@ fun StreamType.getResponseHandler(root: JsonElement) :  JsonResponseHandler<Stre
         StreamType.FeaturedStreamType -> FeaturedStreamsResponseHandler(root)
         StreamType.AllStreams -> StreamResponseHandler(root)
     }
+}
+
+fun JSONObject.getRoot(): JsonElement {
+    return JsonParser().parse(this.toString())
 }

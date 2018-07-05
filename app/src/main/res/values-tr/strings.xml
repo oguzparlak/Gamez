@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tweech</string>
+    <string name="streams">Yayınlar</string>
+    <string name="games">Oyunlar</string>
+    <string name="favorites">Favorilerim</string>
+    <string name="action_settings">Ayarlar</string>
+    <string name="action_search">Ara</string>
+    <string name="action_filter">Filtrele</string>
+    <string name="top_streams">Popüler Yayınlar</string>
+    <string name="featured_streams">Göze Çarpanlar</string>
+</resources>
