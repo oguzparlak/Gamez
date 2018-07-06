@@ -6,6 +6,7 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.view.get
 import com.oguzparlak.ramotioncardslider.service.PopularStreamsAsyncJob
 import com.oguzparlak.ramotioncardslider.R
 import com.oguzparlak.ramotioncardslider.VolleyClient
@@ -32,7 +33,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         mBottomNavigationView.setOnNavigationItemSelectedListener(this)
-        openFragment()
+        onNavigationItemSelected(mBottomNavigationView.menu[0])
         PopularStreamsAsyncJob.scheduleJob()
     }
 
@@ -77,9 +78,16 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         when (id) {
-            R.id.action_stream -> openFragment()
-            R.id.action_games -> print("")
-            R.id.action_favs -> print("")
+            R.id.action_stream -> {
+                toolbar.title = getString(R.string.streams)
+                openFragment()
+            }
+            R.id.action_games -> {
+                toolbar.title = getString(R.string.games)
+            }
+            R.id.action_favs -> {
+                toolbar.title = getString(R.string.favorites)
+            }
         }
         return true
     }
