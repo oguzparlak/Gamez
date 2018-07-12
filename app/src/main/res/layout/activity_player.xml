@@ -7,7 +7,7 @@
     android:weightSum="1"
     android:orientation="vertical"
     android:background="@android:color/black"
-    tools:context="com.oguzparlak.ramotioncardslider.ui.activity.PlayerActivity">
+    tools:context="com.oguzparlak.gamez.ui.activity.PlayerActivity">
 
     <WebView
         android:layout_weight=".5"
