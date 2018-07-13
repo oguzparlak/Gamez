@@ -5,6 +5,7 @@
         android:id="@+id/action_stream"
         android:title="@string/streams"
         android:orderInCategory="100"
+        android:enabled="true"
         android:icon="@drawable/ic_tv_white_24dp"
         app:showAsAction="ifRoom" />
 

@@ -3,6 +3,7 @@ package com.oguzparlak.gamez
 import android.app.Activity
 import android.content.Context
 import android.net.Uri
+import android.support.v4.widget.NestedScrollView
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -16,6 +17,12 @@ import com.oguzparlak.gamez.model.Stream
 import com.oguzparlak.gamez.model.StreamType
 import org.json.JSONObject
 import java.text.DecimalFormat
+import android.opengl.ETC1.getWidth
+import android.opengl.ETC1.getHeight
+
+
+
+
 
 
 /**
@@ -111,4 +118,11 @@ fun StreamType.getResponseHandler(root: JsonElement) :  JsonResponseHandler<Stre
 
 fun JSONObject.getRoot(): JsonElement {
     return JsonParser().parse(this.toString())
+}
+
+fun NestedScrollView.scrollTop() {
+    this.post {
+        this.fling(0)
+        this.smoothScrollTo(0, 0)
+    }
 }

@@ -1,13 +1,10 @@
 package com.oguzparlak.gamez.ui.activity
 
-import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import androidx.core.view.get
-import com.oguzparlak.gamez.service.PopularStreamsAsyncJob
 import com.oguzparlak.gamez.R
 import com.oguzparlak.gamez.VolleyClient
 import com.oguzparlak.gamez.helper.querybuilder.FeaturedStreamsQuery
@@ -15,26 +12,36 @@ import com.oguzparlak.gamez.helper.querybuilder.FeaturedStreamsQueryBuilder
 import com.oguzparlak.gamez.helper.querybuilder.StreamQuery
 import com.oguzparlak.gamez.helper.querybuilder.StreamQueryBuilder
 import com.oguzparlak.gamez.model.StreamType
+import com.oguzparlak.gamez.scrollTop
+import com.oguzparlak.gamez.service.PopularStreamsAsyncJob
 import com.oguzparlak.gamez.ui.fragment.FeaturedStreamFragment
 import com.oguzparlak.gamez.ui.fragment.StreamFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
-class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemReselectedListener {
 
     companion object {
         private const val TAG = "MainActivity"
     }
 
-    private val mContext: Context = this
+    private val mNavigationItemSelectedListener: BottomNavigationView.OnNavigationItemSelectedListener = this
+    private val mNavigationItemReselectedListener: BottomNavigationView.OnNavigationItemReselectedListener = this
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        mBottomNavigationView.setOnNavigationItemSelectedListener(this)
-        onNavigationItemSelected(mBottomNavigationView.menu[0])
+        mBottomNavigationView.apply {
+            setOnNavigationItemSelectedListener(mNavigationItemSelectedListener)
+            setOnNavigationItemReselectedListener(mNavigationItemReselectedListener)
+        }
         PopularStreamsAsyncJob.scheduleJob()
+        // TODO Change it according to tab index later
+        mSwipeRefreshLayout.setOnRefreshListener {
+            openFragment()
+        }
+        mBottomNavigationView.selectedItemId = R.id.action_stream;
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -90,6 +97,15 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             }
         }
         return true
+    }
+
+    override fun onNavigationItemReselected(item: MenuItem) {
+        // TODO Implement it later
+        // For now do nothing
+        val id = item.itemId
+        when (id) {
+            R.id.action_stream -> mScrollView.scrollTop()
+        }
     }
 
 
