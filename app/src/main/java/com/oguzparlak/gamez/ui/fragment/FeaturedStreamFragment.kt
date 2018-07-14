@@ -2,6 +2,7 @@ package com.oguzparlak.gamez.ui.fragment
 
 import com.oguzparlak.gamez.R
 import com.oguzparlak.gamez.model.FeaturedStreamMessage
+import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 

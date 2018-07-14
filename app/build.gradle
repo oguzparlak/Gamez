@@ -63,4 +63,8 @@ dependencies {
     // Google Cloud Messaging
     implementation 'com.google.android.gms:play-services-gcm:15.0.1'
 
+    // Pull-to-Refresh
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.5.1'
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.5.1'//没有使用特殊Header，可以不加这行
+
 }

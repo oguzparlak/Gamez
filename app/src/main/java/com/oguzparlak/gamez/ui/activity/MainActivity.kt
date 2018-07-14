@@ -5,6 +5,7 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.view.get
 import com.oguzparlak.gamez.R
 import com.oguzparlak.gamez.VolleyClient
 import com.oguzparlak.gamez.helper.querybuilder.FeaturedStreamsQuery
@@ -38,10 +39,17 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
         PopularStreamsAsyncJob.scheduleJob()
         // TODO Change it according to tab index later
-        mSwipeRefreshLayout.setOnRefreshListener {
-            openFragment()
+        mRefreshLayout.apply {
+            setOnRefreshListener {
+                openFragment()
+                it.finishRefresh(480, true)
+            }
+            setOnLoadMoreListener {
+                // do nothing
+                it.finishLoadMoreWithNoMoreData()
+            }
         }
-        mBottomNavigationView.selectedItemId = R.id.action_stream;
+        onNavigationItemSelected(mBottomNavigationView.menu[0])
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

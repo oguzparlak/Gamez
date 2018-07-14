@@ -9,24 +9,34 @@
     tools:showIn="@layout/activity_main"
     tools:context=".ui.activity.MainActivity">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/mSwipeRefreshLayout"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/mRefreshLayout"
+        android:layout_above="@id/mBottomNavigationView"
+        app:srlEnableHeaderTranslationContent="true"
+        app:srlEnableNestedScrolling="true"
+        app:srlEnablePreviewInEditMode="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <com.scwang.smartrefresh.layout.header.BezierRadarHeader
+            app:srlAccentColor="@color/colorAccent"
+            app:layout_srlSpinnerStyle="FixedFront"
+            app:srlPrimaryColor="@color/colorPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/mScrollView"
             android:fillViewport="true"
+            android:overScrollMode="never"
             android:layout_above="@+id/mBottomNavigationView"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <LinearLayout
-                android:descendantFocusability="blocksDescendants"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <FrameLayout
                     android:id="@+id/mFragmentContainer"
@@ -44,7 +54,12 @@
 
         </android.support.v4.widget.NestedScrollView>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+        <com.scwang.smartrefresh.layout.footer.BallPulseFooter
+            android:visibility="gone"
+            android:layout_width="0dp"
+            android:layout_height="1dp"/>
+
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
     <android.support.design.widget.BottomNavigationView
         android:layout_alignParentBottom="true"

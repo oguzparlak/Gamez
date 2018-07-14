@@ -1,6 +1,7 @@
 package com.oguzparlak.gamez.service
 
 import android.annotation.TargetApi
+import android.app.Notification
 import android.support.v4.app.NotificationCompat
 import com.evernote.android.job.Job
 import com.evernote.android.job.JobCreator
@@ -16,8 +17,11 @@ import android.app.NotificationManager
 import android.app.NotificationChannel
 import android.os.Build
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.support.v4.app.NotificationManagerCompat
+import com.oguzparlak.gamez.R
+import com.oguzparlak.gamez.toK
 import com.oguzparlak.gamez.ui.activity.MainActivity
 
 
@@ -32,6 +36,9 @@ class StreamPopularityCreator : JobCreator {
 class PopularStreamsAsyncJob : Job() {
 
     companion object {
+
+        private const val GAME_NOTIFICATION = 1000
+
         private const val TAG = "PopularStreamsAsyncJob"
 
         private const val CHANNEL_ID = "com.oguzparlak.gamez.populargames"
@@ -56,6 +63,7 @@ class PopularStreamsAsyncJob : Job() {
         // exceeds 100K people.
         // Send a request to get the top games from TwitchAPI
         EventBus.getDefault().register(this)
+        // Get top Games from Twitch
         VolleyClient.instance.getTopGames(TOP_GAMES_ENDPOINT)
         return Result.SUCCESS
     }
@@ -71,36 +79,39 @@ class PopularStreamsAsyncJob : Job() {
         val mostPopularGame = games.maxBy { it.viewerCount }
         // TODO Save the game in SharedPreferences
         // TODO Prepare and show notification
-        // Log.d(TAG, "Most popular game is ${mostPopularGame!!.gameDetail.name}")
-        createNotificationChannel()
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        // Set tap action of the notification
         val intent = Intent(context, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
-        val mBuilder = NotificationCompat.Builder(context, "Media & Entertainment")
-                .setSmallIcon(android.R.drawable.ic_btn_speak_now)
-                .setContentTitle("Woooohooo")
+        // Build the notification
+        val textContent = String.format("%s has reached %s viewer count",
+                mostPopularGame!!.gameDetail.name, mostPopularGame.viewerCount.toK())
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_games_24dp)
+                .setContentTitle(String.format("%s is on fire", mostPopularGame.gameDetail.name))
+                .setContentText(textContent)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(textContent))
                 .setContentIntent(pendingIntent)
-                .setContentText(mostPopularGame!!.gameDetail.name)
-                .setStyle(NotificationCompat.BigTextStyle()
-                        .bigText("Much longer text that cannot fit one line..."))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-        val notificationManagerCompat = NotificationManagerCompat.from(context)
-        notificationManagerCompat.notify(0x001, mBuilder.build())
+                .build()
+        // If the os version is higher than 26, create a notification channel
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Popular Games Alert"
+            val description = "Alerts you when a game's view count is higher related to others"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(CHANNEL_ID, name, importance)
+            channel.description = description
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        // Show the notification
+        notificationManager.notify(GAME_NOTIFICATION, notification)
     }
 
-    @TargetApi(Build.VERSION_CODES.O)
-    private fun createNotificationChannel() {
-        val name = "Popular Games"// context.getString(R.string.channel_name)
-        val description = "Get notified when a game's view count is so high" // context.getString(R.string.channel_description)
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel(CHANNEL_ID, name, importance)
-        channel.description = description
-        // Register the channel with the system; you can't change the importance
-        // or other notification behaviors after this
-        val notificationManager = context.getSystemService(NotificationManager::class.java)
-        notificationManager.createNotificationChannel(channel)
-    }
-
+    // TODO Change the type of Error
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onError(error: Error) {
         // Log.d(TAG, "onMessageReceived: error: $error")

@@ -9,4 +9,5 @@
     <string name="action_filter">Filter</string>
     <string name="top_streams">Top Streams</string>
     <string name="featured_streams">Featured Streams</string>
+    <string name="last_update">Last updated</string>
 </resources>

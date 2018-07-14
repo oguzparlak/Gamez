@@ -19,10 +19,7 @@ import org.json.JSONObject
 import java.text.DecimalFormat
 import android.opengl.ETC1.getWidth
 import android.opengl.ETC1.getHeight
-
-
-
-
+import android.widget.ScrollView
 
 
 /**
@@ -122,7 +119,7 @@ fun JSONObject.getRoot(): JsonElement {
 
 fun NestedScrollView.scrollTop() {
     this.post {
-        this.fling(0)
+        // this.fling(0)
         this.smoothScrollTo(0, 0)
     }
 }
