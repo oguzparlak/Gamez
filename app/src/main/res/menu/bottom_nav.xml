@@ -5,13 +5,14 @@
         android:id="@+id/action_stream"
         android:title="@string/streams"
         android:orderInCategory="100"
-        android:enabled="true"
+        android:checked="true"
         android:icon="@drawable/ic_tv_white_24dp"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_games"
         android:title="@string/games"
+        android:checked="false"
         android:orderInCategory="101"
         android:icon="@drawable/ic_games_24dp"
         app:showAsAction="ifRoom" />
@@ -19,6 +20,7 @@
     <item
         android:id="@+id/action_favs"
         android:title="@string/favorites"
+        android:checked="false"
         android:orderInCategory="102"
         android:icon="@drawable/ic_favorite_border_24dp"
         app:showAsAction="ifRoom" />

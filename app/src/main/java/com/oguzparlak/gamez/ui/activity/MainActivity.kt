@@ -16,11 +16,13 @@ import com.oguzparlak.gamez.model.StreamType
 import com.oguzparlak.gamez.scrollTop
 import com.oguzparlak.gamez.service.PopularStreamsAsyncJob
 import com.oguzparlak.gamez.ui.fragment.FeaturedStreamFragment
+import com.oguzparlak.gamez.ui.fragment.GameFragment
 import com.oguzparlak.gamez.ui.fragment.StreamFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
-class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemReselectedListener {
+class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
+        BottomNavigationView.OnNavigationItemReselectedListener {
 
     companion object {
         private const val TAG = "MainActivity"
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         mBottomNavigationView.apply {
             setOnNavigationItemSelectedListener(mNavigationItemSelectedListener)
             setOnNavigationItemReselectedListener(mNavigationItemReselectedListener)
+            onNavigationItemSelected(mBottomNavigationView.menu[0])
         }
         PopularStreamsAsyncJob.scheduleJob()
         // TODO Change it according to tab index later
@@ -49,7 +52,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 it.finishLoadMoreWithNoMoreData()
             }
         }
-        onNavigationItemSelected(mBottomNavigationView.menu[0])
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -90,21 +92,30 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         volleyClient.getStreams(StreamType.AllStreams, StreamQueryBuilder().getQuery(StreamQuery(limit = "100")))
     }
 
+    // TODO Need to save the state of Fragments
+    // TODO Create a class called FragmentManager
+    // TODO Handle deletion, replacement, addition, and saving the state of fragments there.
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         when (id) {
             R.id.action_stream -> {
                 toolbar.title = getString(R.string.streams)
                 openFragment()
+                return true
             }
             R.id.action_games -> {
                 toolbar.title = getString(R.string.games)
+                supportFragmentManager.beginTransaction()
+                        .replace(R.id.mBaseFragmentContainer, GameFragment())
+                        .commit()
+                return true
             }
             R.id.action_favs -> {
                 toolbar.title = getString(R.string.favorites)
+                return true
             }
         }
-        return true
+        return false
     }
 
     override fun onNavigationItemReselected(item: MenuItem) {
