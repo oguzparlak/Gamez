@@ -94,6 +94,7 @@ class PopularStreamsAsyncJob : Job() {
                 .setStyle(NotificationCompat.BigTextStyle().bigText(textContent))
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
                 .build()
         // If the os version is higher than 26, create a notification channel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
