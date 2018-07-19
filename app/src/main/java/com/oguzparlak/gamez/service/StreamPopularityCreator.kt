@@ -20,9 +20,11 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.NotificationManagerCompat
+import android.text.Html
 import com.oguzparlak.gamez.R
 import com.oguzparlak.gamez.toK
 import com.oguzparlak.gamez.ui.activity.MainActivity
+import java.net.URLDecoder
 
 
 class StreamPopularityCreator : JobCreator {
@@ -89,7 +91,8 @@ class PopularStreamsAsyncJob : Job() {
                 mostPopularGame!!.gameDetail.name, mostPopularGame.viewerCount.toK())
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_games_24dp)
-                .setContentTitle(String.format("%s is on fire", mostPopularGame.gameDetail.name))
+                .setContentTitle(String.format("%s is on fire !! ${Html.fromHtml(URLDecoder.decode("55%2B%31%46%35%32%35"))}",
+                        mostPopularGame.gameDetail.name))
                 .setContentText(textContent)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(textContent))
                 .setContentIntent(pendingIntent)
