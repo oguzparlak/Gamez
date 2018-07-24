@@ -1,6 +1,7 @@
 package com.oguzparlak.gamez
 
 import android.app.Activity
+import android.app.ActivityManager
 import android.content.Context
 import android.net.Uri
 import android.support.v4.widget.NestedScrollView
@@ -19,7 +20,9 @@ import org.json.JSONObject
 import java.text.DecimalFormat
 import android.opengl.ETC1.getWidth
 import android.opengl.ETC1.getHeight
+import android.text.Html
 import android.widget.ScrollView
+import java.net.URLDecoder
 
 
 /**
@@ -117,9 +120,19 @@ fun JSONObject.getRoot(): JsonElement {
     return JsonParser().parse(this.toString())
 }
 
+// TODO Fix ! Not working as expected
 fun NestedScrollView.scrollTop() {
     this.post {
         // this.fling(0)
         this.smoothScrollTo(0, 0)
     }
+}
+
+/**
+ * Checks whether the app is in the foreground
+ */
+fun Context.appInForeground(): Boolean {
+    val activityManager = this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    val runningAppProcesses = activityManager.runningAppProcesses ?: return false
+    return runningAppProcesses.any { it.processName == this.packageName && it.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND }
 }
