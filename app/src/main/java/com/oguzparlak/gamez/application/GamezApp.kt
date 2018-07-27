@@ -5,7 +5,6 @@ import com.evernote.android.job.JobManager
 import com.oguzparlak.gamez.R
 import com.oguzparlak.gamez.service.StreamPopularityCreator
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
-import com.scwang.smartrefresh.layout.footer.ClassicsFooter
 import com.scwang.smartrefresh.layout.header.BezierRadarHeader
 
 
