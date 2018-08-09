@@ -18,11 +18,12 @@ import com.ramotion.cardslider.CardSliderLayoutManager
 import com.ramotion.cardslider.CardSnapHelper
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.stream_fragment.*
+import me.yokeyword.fragmentation.SupportFragment
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-abstract class BaseStreamFragment: Fragment(), OnStreamClickListener {
+abstract class BaseStreamFragment: SupportFragment(), OnStreamClickListener {
 
     companion object {
         private const val TAG = "BaseStreamFragment"

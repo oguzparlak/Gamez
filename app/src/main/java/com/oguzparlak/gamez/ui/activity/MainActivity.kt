@@ -2,10 +2,10 @@ package com.oguzparlak.gamez.ui.activity
 
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import androidx.core.view.get
+import com.oguzparlak.gamez.BuildConfig
 import com.oguzparlak.gamez.R
 import com.oguzparlak.gamez.VolleyClient
 import com.oguzparlak.gamez.helper.querybuilder.FeaturedStreamsQuery
@@ -20,8 +20,10 @@ import com.oguzparlak.gamez.ui.fragment.GameFragment
 import com.oguzparlak.gamez.ui.fragment.StreamFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import me.yokeyword.fragmentation.Fragmentation
+import me.yokeyword.fragmentation.SupportActivity
 
-class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
+class MainActivity : SupportActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
         BottomNavigationView.OnNavigationItemReselectedListener {
 
     companion object {
@@ -35,11 +37,13 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        /*
         mBottomNavigationView.apply {
             setOnNavigationItemSelectedListener(mNavigationItemSelectedListener)
             setOnNavigationItemReselectedListener(mNavigationItemReselectedListener)
             onNavigationItemSelected(mBottomNavigationView.menu[0])
         }
+        */
         PopularStreamsAsyncJob.scheduleJob()
         // TODO Change it according to tab index later
         mRefreshLayout.apply {
@@ -52,6 +56,13 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 it.finishLoadMoreWithNoMoreData()
             }
         }
+
+        if (findFragment(StreamFragment::class.java) == null) {
+            loadRootFragment(R.id.mFragmentContainer, StreamFragment())
+        }
+
+        val volleyClient = VolleyClient.instance
+        volleyClient.getStreams(StreamType.AllStreams, StreamQueryBuilder().getQuery(StreamQuery(limit = "100")))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -92,9 +103,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         volleyClient.getStreams(StreamType.AllStreams, StreamQueryBuilder().getQuery(StreamQuery(limit = "100")))
     }
 
-    // TODO Need to save the state of Fragments
-    // TODO Create a class called FragmentManager
-    // TODO Handle deletion, replacement, addition, and saving the state of fragments there.
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         when (id) {
