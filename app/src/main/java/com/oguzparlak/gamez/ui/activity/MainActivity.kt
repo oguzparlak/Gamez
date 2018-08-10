@@ -48,7 +48,7 @@ class MainActivity : SupportActivity(), BottomNavigationView.OnNavigationItemSel
         // TODO Change it according to tab index later
         mRefreshLayout.apply {
             setOnRefreshListener {
-                openFragment()
+                openFragment(replace = true)
                 it.finishRefresh(480, true)
             }
             setOnLoadMoreListener {
@@ -57,12 +57,7 @@ class MainActivity : SupportActivity(), BottomNavigationView.OnNavigationItemSel
             }
         }
 
-        if (findFragment(StreamFragment::class.java) == null) {
-            loadRootFragment(R.id.mFragmentContainer, StreamFragment())
-        }
-
-        val volleyClient = VolleyClient.instance
-        volleyClient.getStreams(StreamType.AllStreams, StreamQueryBuilder().getQuery(StreamQuery(limit = "100")))
+        openFragment()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -85,22 +80,22 @@ class MainActivity : SupportActivity(), BottomNavigationView.OnNavigationItemSel
         return false
     }
 
-    private fun openFragment() {
+    private fun openFragment(replace: Boolean = false) {
         // Add Fragment
-        val streamFragment = StreamFragment()
-        val featuredStreamsFragment = FeaturedStreamFragment()
+        // if (findFragment(StreamFragment::class.java) == null) {
+        // }
 
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.mFragmentContainer, streamFragment)
-                .commit()
-
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.mSecondFragmentContainer, featuredStreamsFragment)
-                .commit()
+        if (replace) {
+            replaceFragment(StreamFragment(), false)
+            replaceFragment(FeaturedStreamFragment(), false)
+        } else {
+            loadRootFragment(R.id.mFragmentContainer, StreamFragment())
+            loadRootFragment(R.id.mSecondFragmentContainer, FeaturedStreamFragment())
+        }
 
         val volleyClient = VolleyClient.instance
-        volleyClient.getStreams(StreamType.FeaturedStreamType, FeaturedStreamsQueryBuilder().getQuery(FeaturedStreamsQuery()))
         volleyClient.getStreams(StreamType.AllStreams, StreamQueryBuilder().getQuery(StreamQuery(limit = "100")))
+        volleyClient.getStreams(StreamType.FeaturedStreamType, FeaturedStreamsQueryBuilder().getQuery(FeaturedStreamsQuery()))
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
